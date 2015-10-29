@@ -1,0 +1,1 @@
+This project contains examples of Java programs querying mongo DB. Morphia Object Data Mapper is used. It needs mongo db installed locally. 
