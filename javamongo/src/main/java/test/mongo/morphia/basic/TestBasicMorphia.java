@@ -19,7 +19,7 @@ public class TestBasicMorphia {
 		ds.save(person);
 		Query<Person> query = ds.find(Person.class).field("name").equal("Guru");
 		Person personFromDB = query.get();
-		System.out.println(personFromDB.getName());
+		System.out.println(personFromDB.getName());		
 	}
 	
 	private static Person getTestData() {
