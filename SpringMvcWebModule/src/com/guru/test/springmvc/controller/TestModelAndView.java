@@ -8,12 +8,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.guru.test.spring.autoscan.User;
 
-@Controller
+//@Controller
 public class TestModelAndView {
 
 	// different versions of setting parameters in view model
 	
-	@Autowired User user;
+	//@Autowired User user;
 	
 	/*@RequestMapping(value="/index", method={RequestMethod.GET})
 	public String getMainPage(Model modelAndView) {
@@ -35,7 +35,7 @@ public class TestModelAndView {
 		return "index";
 	}*/
 	
-	@RequestMapping(value="/index")
+	/*@RequestMapping(value="/index")
 	public ModelAndView getMainPage() {
 		user.setFirstName("Gurunath");
 		user.setLastName("Lohar");
@@ -43,5 +43,5 @@ public class TestModelAndView {
 		ModelAndView modelAndView = new ModelAndView("index");
 		modelAndView.addObject("userObject", user);
 		return modelAndView;
-	}
+	}*/
 }
