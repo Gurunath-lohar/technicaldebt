@@ -1,0 +1,59 @@
+	<http pattern="auth/user" create-session="stateless"
+		xmlns="http://www.springframework.org/schema/security">
+		<intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY" />
+		<anonymous enabled="false" />
+		<http-basic entry-point-ref="clientAuthenticationEntryPoint" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<authentication-manager alias="authenticationManager"
+		xmlns="http://www.springframework.org/schema/security">
+		<authentication-provider>
+			<authentication-provider ref="customAuthenticationProvider" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<bean id="clientAuthenticationEntryPoint"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+		<property name="realmName" value="test/client" />
+		<property name="typeName" value="Basic" />
+	</bean>
+	
+	<bean id="customAuthenticationProvider"
+		class="com.beinjavaguys.spring.security.CustomAuthenticationProvider">
+	</bean>
+	
+	<!-- This is where we tells spring security what URL should be protected 
+		and what roles have access to them -->
+	<http pattern="/api/**" create-session="never"
+		entry-point-ref="oauthAuthenticationEntryPoint"
+		xmlns="http://www.springframework.org/schema/security">
+		<anonymous enabled="false" />
+		<intercept-url pattern="/api/**" access="ROLE_APP" <!-- create method level access here -->/>
+		<custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<bean id="oauthAuthenticationEntryPoint"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+		<property name="realmName" value="test" />
+	</bean>
+
+	<oauth:resource-server id="resourceServerFilter"
+		resource-id="test" token-services-ref="tokenServices" 
+		<!--  configure a custom filter here which verifies the token  -->
+		/>
+		
+	<bean id="oauthAccessDeniedHandler"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
+
+	<sec:global-method-security
+		pre-post-annotations="enabled" proxy-target-class="true">
+		<!--you could also wire in the expression handler up at the layer of the 
+			http filters. See https://jira.springsource.org/browse/SEC-1452 -->
+		<sec:expression-handler ref="oauthExpressionHandler" />
+	</sec:global-method-security>
+
+	<oauth:expression-handler id="oauthExpressionHandler" />
+	<oauth:web-expression-handler id="oauthWebExpressionHandler" />
+</beans>
